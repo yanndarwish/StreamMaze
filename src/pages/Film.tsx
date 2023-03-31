@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { MediaType } from "../types"
 import Image from "../components/Image"
 import Section from "../components/Section"
@@ -13,6 +13,7 @@ export interface IFilmProps {
 
 const Film = (props: IFilmProps) => {
 	const { params } = useParams()
+	const navigate = useNavigate()
 
 	const [film, setFilm] = useState<Film>({
 		id: 0,
@@ -43,6 +44,7 @@ const Film = (props: IFilmProps) => {
 	const [cast, setCast] = useState<Cast[]>([])
 	const [trailers, setTrailers] = useState<Trailer[]>([])
 	const [recommendations, setRecommendations] = useState<Film[]>([])
+
 	const fetch = () => {
 		const arrs: any[] = []
 
@@ -51,7 +53,7 @@ const Film = (props: IFilmProps) => {
 		}
 		setCast(arrs)
 		setTrailers(arrs)
-        setRecommendations(arrs)
+		setRecommendations(arrs)
 	}
 
 	useEffect(() => {
@@ -91,11 +93,10 @@ const Film = (props: IFilmProps) => {
 				<div className="scrollbar scrollbar-thumb-primary scrollbar-track-header overflow-x-scroll">
 					<div className="flex items-center gap-3">
 						{cast.map((cast, i) => (
-							<div className="flex-shrink-0 w-[200px] my-3">
+							<div className="flex-shrink-0 w-[200px] my-3" key={i}>
 								<Card
 									title="lorem ipsum elid dhfdjshv sjdlsf sl spoef pdkfsln sldkhf slkdhflsheiohfjslkdn slkdhflksd"
 									imageSrc=""
-									key={i}
 								></Card>
 							</div>
 						))}
@@ -107,8 +108,8 @@ const Film = (props: IFilmProps) => {
 				<div className="scrollbar scrollbar-thumb-primary scrollbar-track-header overflow-x-scroll">
 					<div className="flex items-center gap-3">
 						{cast.map((cast, i) => (
-							<div className="flex-shrink-0 w-[300px] my-3">
-								<Card title="" imageSrc="" key={i}></Card>
+							<div className="flex-shrink-0 w-[300px] my-3" key={i}>
+								<Card title="" imageSrc=""></Card>
 							</div>
 						))}
 					</div>
@@ -119,6 +120,9 @@ const Film = (props: IFilmProps) => {
 				<Slider slidesToShow={2} slidesToScroll={2} swipe={false}>
 					{film.seasons.map((season, i) => (
 						<Card
+							onClick={() =>
+								navigate(`/tv/${film.id}/season/${season.seasonNumber}`)
+							}
 							title={`Season ${season.seasonNumber}`}
 							imageSrc={film.coverPath}
 							key={i}

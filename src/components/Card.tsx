@@ -13,7 +13,7 @@ const Card = (props: ICardProps) => {
 
 	return (
 		<div
-			onClick={() => props.onClick && props.onClick}
+			onClick={() => props.onClick && props.onClick()}
 			className="mx-3 my-1.5 cursor-pointer"
 		>
 			<Image src="" className="min-h-[200px] h-[200px]"></Image>
