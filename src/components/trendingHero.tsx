@@ -4,6 +4,7 @@ import Image from "./Image"
 import { MdPlayCircleOutline } from "react-icons/md"
 export interface ITrendingHeroProps {
 	film: Film
+	onClick: () => void
 }
 
 const TrendingHero = (props: ITrendingHeroProps) => {
@@ -11,7 +12,7 @@ const TrendingHero = (props: ITrendingHeroProps) => {
 	return (
 		<div
 			className="h-[300px] relative flex items-center cursor-pointer"
-			onClick={() => navigate(`/${props.film.mediaType}/${props.film.id}`)}
+			onClick={() => props.onClick()}
 		>
 			{/* bg image */}
 			<div className="absolute left-0 top-0 right-0 bottom-0">
