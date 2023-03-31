@@ -3,6 +3,7 @@ import Slick, { Settings } from "react-slick"
 
 interface Props extends Settings {
 	isMovieCard?: boolean
+	isSeasonCard?: boolean
 }
 
 const Slider = (props: Props) => {
@@ -11,6 +12,30 @@ const Slider = (props: Props) => {
 	}
 
 	if (props.isMovieCard) {
+		settings = {
+			...settings,
+			infinite: true,
+			slidesToShow: 5,
+			slidesToScroll: 1,
+			swipe: false,
+			responsive: [
+				{
+					breakpoint: 600,
+					settings: {
+						slidesToShow: 3,
+						slidesToScroll: 3,
+					},
+				},
+				{
+					breakpoint: 480,
+					settings: {
+						slidesToShow: 2,
+						slidesToScroll: 2,
+					},
+				},
+			],
+		}
+	} else if (props.isSeasonCard) {
 		settings = {
 			...settings,
 			infinite: true,

@@ -91,7 +91,7 @@ const Header = () => {
 						<Link className={getMenuClass("/movies")} to={"/movies"}>
 							Movies
 						</Link>
-						<Link className={getMenuClass("/series")} to={"/series"}>
+						<Link className={getMenuClass("/series")} to={"/tv"}>
 							Series
 						</Link>
 					</div>

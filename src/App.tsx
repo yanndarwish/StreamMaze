@@ -5,14 +5,16 @@ import Header from "./layout/Header"
 
 const App = () => {
 	return (
-		<BrowserRouter>
-			{/* header */}
-			<Header />
-			{/* body */}
-			<Body />
-			{/* footer */}
-			<Footer />
-		</BrowserRouter>
+		<div className="pb-[64px]">
+			<BrowserRouter>
+				{/* header */}
+				<Header />
+				{/* body */}
+				<Body />
+				{/* footer */}
+				<Footer />
+			</BrowserRouter>
+		</div>
 	)
 }
 

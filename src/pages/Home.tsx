@@ -17,6 +17,7 @@ const Home = (props: IHomeProps) => {
 		for (let i = 0; i < 6; i++) {
 			arrs.push({
 				id: i,
+				mediaType: "tv",
 				title: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
 				description:
 					"Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga illum possimus tempore qui ducimus. Provident, totam cum aspernatur voluptatibus voluptatum dicta ullam iure reprehenderit natus nam iusto. Officiis, natus quis!",
@@ -50,14 +51,9 @@ const Home = (props: IHomeProps) => {
 			</Section>
 			{/* in theater */}
 			<Section title="In theaters">
-				<Slider
-					isMovieCard={true}
-					autoplay={true}
-					slidesToShow={5}
-					slidesToScroll={5}
-				>
+				<Slider isMovieCard={true} autoplay={true}>
 					{inTheaters.map((film, i) => (
-						<Card film={film} key={i} />
+						<Card title={film.title} imageSrc={film.coverPath} key={i} />
 					))}
 				</Slider>
 			</Section>

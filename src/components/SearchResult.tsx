@@ -17,6 +17,7 @@ const SearchResult = (props: ISearchResultProps) => {
 		for (let i = 0; i < 6; i++) {
 			arrs.push({
 				id: i,
+				mediaType: "tv",
 				title:
 					"Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga illum possimus tempore qui ducimus. Provident, totam cum aspernatur voluptatibus voluptatum dicta ullam iure reprehenderit natus nam iusto. Officiis, natus quis!",
 				description: "",
