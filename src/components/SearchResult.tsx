@@ -34,7 +34,7 @@ const SearchResult = (props: ISearchResultProps) => {
 	}, [props.keyword])
 
 	return (
-		<div className="absolute top-[48px] left-0 right-0 rounded-md overflow-hidden bg-header">
+		<div className="absolute top-[48px] left-0 right-0 rounded-md overflow-auto bg-header max-h-[480px] shadow-lg">
 			{items.map((film, i) => (
 				<div
 					key={i}
@@ -43,7 +43,7 @@ const SearchResult = (props: ISearchResultProps) => {
 					{/* image */}
 					<Image
 						src=""
-						className="h-[72px] min-w-[102px] w-[102px] rounded-md"
+						className="h-[82px] min-w-[102px] w-[102px] rounded-md"
 					></Image>
 					{/* title and genre */}
 					<div className="px-3 truncate">
@@ -59,7 +59,7 @@ const SearchResult = (props: ISearchResultProps) => {
 			{totalItems > 5 && (
 				<button
 					onClick={() => props.goToSearchPage()}
-					className="px-3 py-1.5 bg-primary w-full hover:text-body"
+					className="px-3 py-1.5 bg-primary w-full hover:text-body sticky bottom-0 shadow-lg"
 				>
 					{" "}
 					More results

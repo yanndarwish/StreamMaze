@@ -78,8 +78,8 @@ const Header = () => {
 	}, [])
 
 	return (
-		<div className="bg-header">
-			<Container className="flex justify-between items-center">
+		<div className="bg-header sticky top-0 z-[99]">
+			<Container className="flex justify-between items-center gap-3">
 				{/* brand & menu */}
 				<div className="flex items-center gap-6">
 					{/* brand */}
@@ -97,7 +97,7 @@ const Header = () => {
 					</div>
 				</div>
 				{/* search */}
-				<div className="relative border-b-[1.5px] border-white flex items-center p-1 flex-[0.5] focus-within:border-primary">
+				<div className="relative border-b-[1.5px] border-white flex items-center p-1 flex-[0.8] focus-within:border-primary">
 					<input
 						value={keyword}
 						onInput={(e) => setKeyword(e.currentTarget.value)}
@@ -107,7 +107,7 @@ const Header = () => {
 							setSearchFocus(true)
 						}}
 						type="text"
-						className="bg-transparent outline-0 flex-1 p-1"
+						className="bg-transparent outline-0 flex-1 p-1 mobile:w-[100%]"
 						placeholder="Search ..."
 					/>
 					<IoIosSearch size={18} />

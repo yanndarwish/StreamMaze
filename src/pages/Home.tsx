@@ -1,21 +1,23 @@
-import Slider from "react-slick"
 import Section from "../components/Section"
 import { useEffect, useState } from "react"
 import { Film } from "../interfaces"
+import TrendingHero from "../components/TrendingHero"
+import Slider from "../components/slider/Slider"
+import Card from "../components/Card"
 
 export interface IHomeProps {}
 
 const Home = (props: IHomeProps) => {
 	const [trendings, setTrendings] = useState<Film[]>([])
+	const [inTheaters, setInTheaters] = useState<Film[]>([])
 
-	const fetchTrendings = () => {
+	const fetch = () => {
 		const arrs: Film[] = []
 
 		for (let i = 0; i < 6; i++) {
 			arrs.push({
 				id: i,
-				title:
-					"Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+				title: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
 				description:
 					"Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga illum possimus tempore qui ducimus. Provident, totam cum aspernatur voluptatibus voluptatum dicta ullam iure reprehenderit natus nam iusto. Officiis, natus quis!",
 				genreIds: [1, 2, 3, 4, 5],
@@ -25,23 +27,40 @@ const Home = (props: IHomeProps) => {
 			})
 		}
 		setTrendings(arrs)
+		setInTheaters(arrs)
 	}
 
-    useEffect(() => {
-        fetchTrendings()
-    }, [])
+	useEffect(() => {
+		fetch()
+	}, [])
 	return (
 		<>
 			{/* trending */}
 			<Section className="py-0">
-				<Slider>{
-                    trendings.map((film, i) => (
-                        <div className=""></div>
-                    ))
-                    }</Slider>
+				<Slider
+					className="slick-hero"
+					autoplay={true}
+					slidesToShow={1}
+					slidesToScroll={1}
+				>
+					{trendings.map((film, i) => (
+						<TrendingHero film={film} key={i} />
+					))}
+				</Slider>
 			</Section>
 			{/* in theater */}
-
+			<Section title="In theaters">
+				<Slider
+					isMovieCard={true}
+					autoplay={true}
+					slidesToShow={5}
+					slidesToScroll={5}
+				>
+					{inTheaters.map((film, i) => (
+						<Card film={film} key={i} />
+					))}
+				</Slider>
+			</Section>
 			{/* popular */}
 
 			{/* top rated tv */}
