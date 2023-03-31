@@ -29,31 +29,30 @@ const Catalog = (props: ICatalogProps) => {
 			break
 	}
 
-    const fetch = () => {
-			const arrs: any[] = []
+	const fetch = () => {
+		const arrs: any[] = []
 
-			for (let i = 0; i < 20; i++) {
-				arrs.push({
-					title:
-						"Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores quasi voluptates et perferendis placeat laboriosam nam fuga aperiam, ullam a velit explicabo! Ducimus officia eveniet reprehenderit nesciunt hic magni blanditiis.",
-					description:
-						"Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores quasi voluptates et perferendis placeat laboriosam nam fuga aperiam, ullam a velit explicabo! Ducimus officia eveniet reprehenderit nesciunt hic magni blanditiis.",
-
-				})
-			}
-			setFilms(arrs)
+		for (let i = 0; i < 20; i++) {
+			arrs.push({
+				title:
+					"Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores quasi voluptates et perferendis placeat laboriosam nam fuga aperiam, ullam a velit explicabo! Ducimus officia eveniet reprehenderit nesciunt hic magni blanditiis.",
+				description:
+					"Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores quasi voluptates et perferendis placeat laboriosam nam fuga aperiam, ullam a velit explicabo! Ducimus officia eveniet reprehenderit nesciunt hic magni blanditiis.",
+			})
 		}
+		setFilms(arrs)
+	}
 
-		useEffect(() => {
-			fetch()
-		}, [])
+	useEffect(() => {
+		fetch()
+	}, [])
 
 	return (
 		<>
 			{/* background */}
 			<div className="h-[120px] left-0 right-0 top-0 relative">
 				<div className="overlay-film"></div>
-				<Image src=""></Image>
+				<div className="bg-primary h-full w-full"></div>
 			</div>
 			{/* page title */}
 			<Section
@@ -64,7 +63,9 @@ const Catalog = (props: ICatalogProps) => {
 			<Section>
 				<div className="grid lg:grid-cols-5 sm:grid-cols-4 mobile:grid-cols-3 relative z-[11]">
 					{films.map((film, i) => (
-						<Card imageSrc="" title={film.title} key={i}></Card>
+						<div>
+							<Card imageSrc="" title={film.title} key={i}></Card>
+						</div>
 					))}
 				</div>
 			</Section>

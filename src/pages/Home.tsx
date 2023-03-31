@@ -37,7 +37,7 @@ const Home = (props: IHomeProps) => {
 	return (
 		<>
 			{/* trending */}
-			<Section className="py-0">
+			<Section className="pt-0 pb-0">
 				<Slider
 					className="slick-hero"
 					autoplay={true}
