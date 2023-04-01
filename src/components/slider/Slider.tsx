@@ -16,6 +16,7 @@ const Slider = (props: Props) => {
 	if (props.isMovieCard) {
 		settings = {
 			...settings,
+			autoplay: false,
 			infinite: true,
 			slidesToShow: 5,
 			slidesToScroll: 1,

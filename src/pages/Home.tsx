@@ -5,6 +5,13 @@ import TrendingHero from "../components/TrendingHero"
 import Slider from "../components/slider/Slider"
 import Card from "../components/Card"
 import { useNavigate } from "react-router-dom"
+import {
+	getInTheaters,
+	getPopulars,
+	getTopRated,
+	getTrendings,
+} from "../api/tmdb-api"
+import { isFilm, mergeFilms, tmdbImageSrc } from "../utils"
 
 export interface IHomeProps {}
 
@@ -12,29 +19,41 @@ const Home = (props: IHomeProps) => {
 	const navigate = useNavigate()
 	const [trendings, setTrendings] = useState<Film[]>([])
 	const [inTheaters, setInTheaters] = useState<Film[]>([])
+	const [populars, setPopulars] = useState<Film[]>([])
+	const [topRatedMovies, setTopRatedMovies] = useState<Film[]>([])
+	const [topRatedTVs, setTopRatedTVs] = useState<Film[]>([])
 
-	const fetch = () => {
-		const arrs: Film[] = []
+	const fetchInTheaters = async () => {
+		setInTheaters(await getInTheaters())
+	}
 
-		for (let i = 0; i < 6; i++) {
-			arrs.push({
-				id: i,
-				mediaType: "tv",
-				title: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-				description:
-					"Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga illum possimus tempore qui ducimus. Provident, totam cum aspernatur voluptatibus voluptatum dicta ullam iure reprehenderit natus nam iusto. Officiis, natus quis!",
-				genreIds: [1, 2, 3, 4, 5],
-				coverPath: "",
-				posterPath: "",
-				seasons: [],
-			})
-		}
-		setTrendings(arrs)
-		setInTheaters(arrs)
+	const fetchTrending = async () => {
+		const movies = await getTrendings("movie")
+		const tvs = await getTrendings("tv")
+
+		setTrendings(mergeFilms(movies, tvs))
+	}
+
+	const fetchPopular = async () => {
+		const movies = await getPopulars("movie")
+		const tvs = await getPopulars("tv")
+
+		setPopulars(mergeFilms(movies, tvs, 20))
+	}
+
+	const fetchTopRatedMovies = async () => {
+		setTopRatedMovies(await getTopRated("movie"))
+	}
+	const fetchTopRatedTVs = async () => {
+		setTopRatedTVs(await getTopRated("tv"))
 	}
 
 	useEffect(() => {
-		fetch()
+		fetchTrending()
+		fetchInTheaters()
+		fetchPopular()
+		fetchTopRatedMovies()
+		fetchTopRatedTVs()
 	}, [])
 	return (
 		<>
@@ -61,19 +80,60 @@ const Home = (props: IHomeProps) => {
 			</Section>
 			{/* in theater */}
 			<Section title="In theaters">
-				<Slider isMovieCard={true} autoplay={true}>
+				<Slider isMovieCard={true}>
 					{(_) =>
 						inTheaters.map((film, i) => (
-							<Card title={film.title} imageSrc={film.coverPath} key={i} />
+							<Card
+								title={film.title}
+								imageSrc={tmdbImageSrc(film.posterPath)}
+								key={i}
+							/>
 						))
 					}
 				</Slider>
 			</Section>
 			{/* popular */}
-
+			<Section title="What's Popular">
+				<Slider isMovieCard={true}>
+					{(_) =>
+						populars.map((film, i) => (
+							<Card
+								title={film.title}
+								imageSrc={tmdbImageSrc(film.posterPath)}
+								key={i}
+							/>
+						))
+					}
+				</Slider>
+			</Section>
 			{/* top rated tv */}
-
+			<Section title="Top Rated TV">
+				<Slider isMovieCard={true}>
+					{(_) =>
+						topRatedTVs.map((film, i) => (
+							<Card
+								title={film.title}
+								imageSrc={tmdbImageSrc(film.posterPath)}
+								key={i}
+							/>
+						))
+					}
+				</Slider>
+			</Section>
 			{/* top rated movies */}
+			<Section title="Top Rated Movies">
+				<Slider isMovieCard={true}>
+					{(_) =>
+						topRatedMovies.map((film, i) => (
+							<Card
+								title={film.title}
+								imageSrc={tmdbImageSrc(film.posterPath)}
+								key={i}
+							/>
+						))
+					}
+				</Slider>
+			</Section>
 		</>
 	)
 }
