@@ -30,7 +30,7 @@ const Season = (props: IEpisodesProps) => {
 				seasonNumber: 3,
 			},
 		],
-	})
+	} as any)
 
 	const [episodes, setEpisodes] = useState<any[]>([])
 

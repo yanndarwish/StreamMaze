@@ -6,82 +6,76 @@ import { useEffect, useState } from "react"
 import { Cast, Film, Trailer } from "../interfaces"
 import Card from "../components/Card"
 import Slider from "../components/slider/Slider"
+import { getCasts, getDetails, getTrailers } from "../api/tmdb-api"
+import { tmdbImageSrc, youtubeThumbnail } from "../utils"
+import { useGlobalContext } from "../App"
 
 export interface IFilmProps {
 	mediaType: MediaType
 }
 
 const Film = (props: IFilmProps) => {
-	const { params } = useParams()
+	const { id } = useParams()
 	const navigate = useNavigate()
+	const globalContext = useGlobalContext()
 
-	const [film, setFilm] = useState<Film>({
-		id: 0,
-		title:
-			"Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptatem est quia saepe, adipisci natus ut ex similique deserunt. Repellendus maxime quos ab in repudiandae sunt pariatur accusamus impedit? Maxime, magnam!",
-		description:
-			"Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptatem est quia saepe, adipisci natus ut ex similique deserunt. Repellendus maxime quos ab in repudiandae sunt pariatur accusamus impedit? Maxime, magnam!",
-		coverPath: "",
-		posterPath: "",
-		mediaType: props.mediaType,
-		genreIds: [1, 2, 3, 4],
-		seasons: [
-			{
-				id: 1,
-				seasonNumber: 1,
-			},
-			{
-				id: 2,
-				seasonNumber: 2,
-			},
-			{
-				id: 3,
-				seasonNumber: 3,
-			},
-		],
-	})
+	const [film, setFilm] = useState<Film | null>(null)
 
 	const [cast, setCast] = useState<Cast[]>([])
 	const [trailers, setTrailers] = useState<Trailer[]>([])
 	const [recommendations, setRecommendations] = useState<Film[]>([])
 
-	const fetch = () => {
+	const fetch = async () => {
+		const film = await getDetails(props.mediaType, parseInt(id as string))
+
+		if (film) {
+			setFilm(film)
+			setCast(await getCasts(film.mediaType, film.id))
+			setTrailers(await getTrailers(film.mediaType, film.id))
+		}
 		const arrs: any[] = []
 
 		for (let i = 0; i < 20; i++) {
 			arrs.push({})
 		}
-		setCast(arrs)
-		setTrailers(arrs)
+
 		setRecommendations(arrs)
 	}
 
 	useEffect(() => {
 		fetch()
-	}, [])
+	}, [id])
+
+	if (!film) {
+		return <div>404</div>
+	}
 
 	return (
 		<>
 			{/* background */}
 			<div className="h-[300px] left-0 right-0 top-0 relative">
 				<div className="overlay-film"></div>
-				<Image src=""></Image>
+				<Image src={tmdbImageSrc(film.coverPath)}></Image>
 			</div>
 			{/* poster and text */}
 			<Section className="-mt-[150px] flex items-center relative z-10 mobile:block">
 				<Image
-					src=""
+					src={tmdbImageSrc(film.posterPath)}
 					className="max-w-[200px] min-w-[200px] h-[295px] mobile:mx-auto"
 				></Image>
 				<div className="px-3 flex flex-col items-start gap-3">
 					<p className="text-xl line-clamp-1">{film.title}</p>
 					<ul className="flex items-center gap-3">
-						{film.genreIds.map((genre, i) => (
+						{film.genreIds.map((id, i) => (
 							<li
 								key={i}
 								className="px-3 py-1.5  bg-primary rounded-lg text-sm"
 							>
-								item {i}
+								{
+									globalContext.genres[film.mediaType]?.find(
+										(genre) => genre.id === id
+									)?.name
+								}
 							</li>
 						))}
 					</ul>
@@ -94,10 +88,10 @@ const Film = (props: IFilmProps) => {
 					<div className="flex items-center gap-3">
 						{cast.map((cast, i) => (
 							<div className="flex-shrink-0 w-[200px] my-3" key={i}>
-								<Card
-									title="lorem ipsum elid dhfdjshv sjdlsf sl spoef pdkfsln sldkhf slkdhflsheiohfjslkdn slkdhflksd"
-									imageSrc=""
-								></Card>
+								<Card imageSrc={tmdbImageSrc(cast.profilePath)}>
+									<p className="font-semibold">{cast.name}</p>
+									<p className="opacity-[0.7] text-sm">{cast.characterName}</p>
+								</Card>
 							</div>
 						))}
 					</div>
@@ -107,9 +101,9 @@ const Film = (props: IFilmProps) => {
 			<Section title="Trailers">
 				<div className="scrollbar scrollbar-thumb-primary scrollbar-track-header overflow-x-scroll">
 					<div className="flex items-center gap-3">
-						{cast.map((cast, i) => (
+						{trailers.map((trailer, i) => (
 							<div className="flex-shrink-0 w-[300px] my-3" key={i}>
-								<Card title="" imageSrc=""></Card>
+								<Card imageSrc={youtubeThumbnail(trailer.key)}></Card>
 							</div>
 						))}
 					</div>
@@ -124,8 +118,8 @@ const Film = (props: IFilmProps) => {
 								onClick={() =>
 									navigate(`/tv/${film.id}/season/${season.seasonNumber}`)
 								}
-								title={`Season ${season.seasonNumber}`}
-								imageSrc={film.coverPath}
+								title={season.name}
+								imageSrc={tmdbImageSrc(season.posterPath)}
 								key={i}
 							/>
 						))

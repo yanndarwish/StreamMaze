@@ -1,20 +1,31 @@
-import { Film } from "./interfaces"
+import { MdSettingsApplications } from "react-icons/md"
+import { Film, Season } from "./interfaces"
 import { MediaType } from "./types"
 
 export const mergeClassName = (val1: string, val2?: string) => {
 	return val1 + " " + (val2 || "")
 }
 
-export const formatResult = (mediaType: MediaType, obj: any): Film => {
+export const formatResult = (obj: any, mediaType?: MediaType): Film => {
+	console.log(obj)
 	return {
 		id: obj.id,
 		title: obj.title || obj.name,
 		description: obj.overview,
 		coverPath: obj.backdrop_path,
 		posterPath: obj.poster_path,
-		genreIds: obj.genre_ids || [],
-		mediaType,
-		seasons: obj.seasons || [],
+		genreIds: obj.genre_ids || obj.genres?.map((genre: any) => genre.id) || [],
+		mediaType: mediaType || obj.media_type,
+		seasons:
+			obj.seasons?.map(
+				(season: any) =>
+				({
+					id: season.id,
+					name: season.name,
+					posterPath: season.poster_path,
+					seasonNumber: season.season_number
+				} satisfies Season)
+			) || [],
 	}
 }
 // check that object is valid Film interface
@@ -43,4 +54,8 @@ export const mergeFilms = (movies: Film[], tvs: Film[], limit = 6) => {
 		if (isFilm(film)) arrs.push(film)
 	}
 	return arrs
+}
+
+export const youtubeThumbnail = (key: string) => {
+	return `https://img.youtube.com/vi/${key}/mqdefault.jpg`
 }

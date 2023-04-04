@@ -10,7 +10,7 @@ const Image = (props: IImageProps) => {
 		<div
 			className={mergeClassName("bg-primary w-full h-full", props.className)}
 		>
-			<img src={props.src} alt="" className="w-full h-full object-cover" />
+			<img src={props.src} alt="" className="w-full h-full object-cover object-center" />
 		</div>
 	)
 }

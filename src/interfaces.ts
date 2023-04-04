@@ -7,8 +7,10 @@ export interface CustomComponentProps {
 }
 
 export interface Season {
-	id: number
+	id: number,
+	name: string
 	seasonNumber: number
+	posterPath: string
 }
 
 export interface Film {
@@ -26,9 +28,15 @@ export interface Cast {
 	id: number
 	name: string
 	characterName: string
+	profilePath: string
 }
 
 export interface Trailer {
 	id: number
 	key: string
+}
+
+export interface Genre {
+	id: number
+	name: string
 }

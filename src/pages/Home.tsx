@@ -23,6 +23,10 @@ const Home = (props: IHomeProps) => {
 	const [topRatedMovies, setTopRatedMovies] = useState<Film[]>([])
 	const [topRatedTVs, setTopRatedTVs] = useState<Film[]>([])
 
+	const goToDetailPage = (film: Film) => {
+		navigate(`/${film.mediaType}/${film.id}`)
+	}
+
 	const fetchInTheaters = async () => {
 		setInTheaters(await getInTheaters())
 	}
@@ -68,9 +72,7 @@ const Home = (props: IHomeProps) => {
 					{(onSwipe) =>
 						trendings.map((film, i) => (
 							<TrendingHero
-								onClick={() =>
-									!onSwipe && navigate(`/${film.mediaType}/${film.id}`)
-								}
+								onClick={() => !onSwipe && goToDetailPage(film)}
 								film={film}
 								key={i}
 							/>
@@ -86,6 +88,7 @@ const Home = (props: IHomeProps) => {
 							<Card
 								title={film.title}
 								imageSrc={tmdbImageSrc(film.posterPath)}
+								onClick={() => goToDetailPage(film)}
 								key={i}
 							/>
 						))
@@ -100,6 +103,7 @@ const Home = (props: IHomeProps) => {
 							<Card
 								title={film.title}
 								imageSrc={tmdbImageSrc(film.posterPath)}
+								onClick={() => goToDetailPage(film)}
 								key={i}
 							/>
 						))
@@ -114,6 +118,7 @@ const Home = (props: IHomeProps) => {
 							<Card
 								title={film.title}
 								imageSrc={tmdbImageSrc(film.posterPath)}
+								onClick={() => goToDetailPage(film)}
 								key={i}
 							/>
 						))
@@ -128,6 +133,7 @@ const Home = (props: IHomeProps) => {
 							<Card
 								title={film.title}
 								imageSrc={tmdbImageSrc(film.posterPath)}
+								onClick={() => goToDetailPage(film)}
 								key={i}
 							/>
 						))

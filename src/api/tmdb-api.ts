@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios"
 import { MediaType } from "../types"
-import { Film } from "../interfaces"
+import { Cast, Film, Genre, Trailer } from "../interfaces"
 import { formatResult } from "../utils"
 
 const axiosClient = axios.create({
@@ -11,6 +11,7 @@ axiosClient.interceptors.request.use((config) => {
 	return {
 		...config,
 		params: {
+			...config.params,
 			api_key: import.meta.env.VITE_TMDB_API_KEY,
 		},
 	}
@@ -25,7 +26,7 @@ export const getTrendings = async (mediaType: MediaType): Promise<Film[]> => {
 			}>
 		>(`/trending/${mediaType}/week`)
 
-		return data.results.map((val) => formatResult(mediaType, val))
+		return data.results.map((val) => formatResult(val, mediaType))
 	} catch (error) {
 		console.error(error)
 	}
@@ -41,7 +42,7 @@ export const getInTheaters = async (): Promise<Film[]> => {
 			}>
 		>(`/movie/now_playing`)
 
-		return data.results.map((val) => formatResult("movie", val))
+		return data.results.map((val) => formatResult(val, "movie"))
 	} catch (error) {
 		console.error(error)
 	}
@@ -64,7 +65,7 @@ export const getPopulars = async (
 			},
 		})
 
-		return data.results.map((val) => formatResult(mediaType, val))
+		return data.results.map((val) => formatResult(val, mediaType))
 	} catch (error) {
 		console.error(error)
 	}
@@ -87,7 +88,114 @@ export const getTopRated = async (
 			},
 		})
 
-		return data.results.map((val) => formatResult(mediaType, val))
+		return data.results.map((val) => formatResult(val, mediaType))
+	} catch (error) {
+		console.error(error)
+	}
+	return []
+}
+
+export const search = async (
+	query: string,
+	page = 1
+): Promise<{
+	totalResults: number
+	films: Film[]
+}> => {
+	try {
+		const { data } = await axiosClient.get<
+			any,
+			AxiosResponse<{
+				total_results: number
+				results: unknown[]
+			}>
+		>(`/search/multi`, {
+			params: {
+				page,
+				query,
+			},
+		})
+
+		return {
+			totalResults: data.total_results,
+			films: data.results.map((val) => formatResult(val)),
+		}
+	} catch (error) {
+		console.error(error)
+	}
+	return {
+		totalResults: 0,
+		films: [],
+	}
+}
+
+export const getGenres = async (mediaType: MediaType): Promise<Genre[]> => {
+	try {
+		const { data } = await axiosClient.get<
+			any,
+			AxiosResponse<{
+				genres: unknown[]
+			}>
+		>(`/genre/${mediaType}/list`)
+
+		return data.genres as Genre[]
+	} catch (error) {
+		console.error(error)
+	}
+	return []
+}
+
+export const getDetails = async (
+	mediaType: MediaType,
+	id: number
+): Promise<Film | null> => {
+	try {
+		const { data } = await axiosClient.get(`/${mediaType}/${id}`)
+
+		return formatResult(data, mediaType)
+	} catch (error) {
+		console.error(error)
+	}
+	return null
+}
+
+export const getCasts = async (
+	mediaType: MediaType,
+	id: number
+): Promise<Cast[]> => {
+	try {
+		const { data } = await axiosClient.get<any, AxiosResponse<{ cast: any[] }>>(
+			`/${mediaType}/${id}/credits`
+		)
+
+		return data.cast.map((cast) => ({
+			id: cast.id,
+			characterName: cast.character,
+			name: cast.name,
+			profilePath: cast.profile_path,
+		}))
+	} catch (error) {
+		console.error(error)
+	}
+	return []
+}
+
+export const getTrailers = async (
+	mediaType: MediaType,
+	id: number
+): Promise<Trailer[]> => {
+	try {
+		const { data } = await axiosClient.get<
+			any,
+			AxiosResponse<{ results: any[] }>
+		>(`/${mediaType}/${id}/videos`)
+
+		return data.results
+			.filter((item) => item.site.toLowerCase() === "youtube")
+			.map((item) => ({
+				id: item.id,
+				key: item.key,
+			}))
 	} catch (error) {
 		console.error(error)
 	}

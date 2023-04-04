@@ -1,6 +1,10 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Film } from "../interfaces"
 import Image from "./Image"
+import { search } from "../api/tmdb-api"
+import { tmdbImageSrc } from "../utils"
+import { useGlobalContext } from "../App"
+import { useNavigate } from "react-router-dom"
 
 export interface ISearchResultProps {
 	keyword: string
@@ -8,26 +12,21 @@ export interface ISearchResultProps {
 }
 
 const SearchResult = (props: ISearchResultProps) => {
+	const navigate = useNavigate()
 	const [items, setItems] = useState<Film[]>([])
-	const [totalItems, setTotalItems] = useState(6)
+	const [totalItems, setTotalItems] = useState(0)
+	const searchTimeout = useRef<any>("")
 
-	const fetch = () => {
-		const arrs: Film[] = []
+	const globalContext = useGlobalContext()
 
-		for (let i = 0; i < 6; i++) {
-			arrs.push({
-				id: i,
-				mediaType: "tv",
-				title:
-					"Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga illum possimus tempore qui ducimus. Provident, totam cum aspernatur voluptatibus voluptatum dicta ullam iure reprehenderit natus nam iusto. Officiis, natus quis!",
-				description: "",
-				genreIds: [1, 2, 3, 4, 5],
-				coverPath: "",
-				posterPath: "",
-				seasons: [],
-			})
-		}
-		setItems(arrs)
+	const fetch = async () => {
+		if (!props.keyword) return
+		clearTimeout(searchTimeout.current)
+		searchTimeout.current = setTimeout(async () => {
+			const res = await search(props.keyword)
+			setTotalItems(res.totalResults)
+			setItems(res.films)
+		}, 120)
 	}
 
 	useEffect(() => {
@@ -40,18 +39,26 @@ const SearchResult = (props: ISearchResultProps) => {
 				<div
 					key={i}
 					className="flex items-start p-1.5 rounded-lg hover:bg-primary cursor-pointer m-1.5"
+					onClick={() => navigate(`/${film.mediaType}/${film.id}`)}
 				>
 					{/* image */}
 					<Image
-						src=""
-						className="h-[82px] min-w-[102px] w-[102px] rounded-md"
+						src={tmdbImageSrc(film.posterPath)}
+						className="h-[72px] max-w-[102px] w-[102px] rounded-md"
 					></Image>
 					{/* title and genre */}
 					<div className="px-3 truncate">
 						<p className="text-base truncate">{film.title}</p>
 						<ul className="flex flex-wrap gap-x-1.5 text-sm opacity-[0.7]">
 							{film.genreIds.map((id, i) => (
-								<li key={i}>item {i}</li>
+								<li key={i}>
+									{
+										globalContext.genres[film.mediaType].find(
+											(genre) => genre.id === id
+										)?.name
+									}
+									{i !== film.genreIds.length - 1 ? ", " : ""}
+								</li>
 							))}
 						</ul>
 					</div>
