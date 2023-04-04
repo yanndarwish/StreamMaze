@@ -7,7 +7,6 @@ export const mergeClassName = (val1: string, val2?: string) => {
 }
 
 export const formatResult = (obj: any, mediaType?: MediaType): Film => {
-	console.log(obj)
 	return {
 		id: obj.id,
 		title: obj.title || obj.name,
@@ -19,12 +18,12 @@ export const formatResult = (obj: any, mediaType?: MediaType): Film => {
 		seasons:
 			obj.seasons?.map(
 				(season: any) =>
-				({
-					id: season.id,
-					name: season.name,
-					posterPath: season.poster_path,
-					seasonNumber: season.season_number
-				} satisfies Season)
+					({
+						id: season.id,
+						name: season.name,
+						posterPath: season.poster_path,
+						seasonNumber: season.season_number,
+					} satisfies Season)
 			) || [],
 	}
 }

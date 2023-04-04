@@ -51,16 +51,14 @@ const App = () => {
 	}
 	return (
 		<BrowserRouter>
-			<div className="pb-[64px]">
-				<GlobalContext.Provider value={{ genres }}>
-					{/* header */}
-					<Header />
-					{/* body */}
-					<Body />
-					{/* footer */}
-					<Footer />
-				</GlobalContext.Provider>
-			</div>
+			<GlobalContext.Provider value={{ genres }}>
+				{/* header */}
+				<Header />
+				{/* body */}
+				<Body />
+				{/* footer */}
+				<Footer />
+			</GlobalContext.Provider>
 		</BrowserRouter>
 	)
 }

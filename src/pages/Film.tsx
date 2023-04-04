@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { MediaType } from "../types"
 import Image from "../components/Image"
 import Section from "../components/Section"
@@ -6,9 +6,15 @@ import { useEffect, useState } from "react"
 import { Cast, Film, Trailer } from "../interfaces"
 import Card from "../components/Card"
 import Slider from "../components/slider/Slider"
-import { getCasts, getDetails, getTrailers } from "../api/tmdb-api"
+import {
+	getCasts,
+	getDetails,
+	getRecommendations,
+	getTrailers,
+} from "../api/tmdb-api"
 import { tmdbImageSrc, youtubeThumbnail } from "../utils"
 import { useGlobalContext } from "../App"
+import Loader from "../components/Loader"
 
 export interface IFilmProps {
 	mediaType: MediaType
@@ -16,10 +22,11 @@ export interface IFilmProps {
 
 const Film = (props: IFilmProps) => {
 	const { id } = useParams()
+	const location = useLocation()
 	const navigate = useNavigate()
 	const globalContext = useGlobalContext()
 
-	const [film, setFilm] = useState<Film | null>(null)
+	const [film, setFilm] = useState<Film | null | undefined>(null)
 
 	const [cast, setCast] = useState<Cast[]>([])
 	const [trailers, setTrailers] = useState<Trailer[]>([])
@@ -32,22 +39,27 @@ const Film = (props: IFilmProps) => {
 			setFilm(film)
 			setCast(await getCasts(film.mediaType, film.id))
 			setTrailers(await getTrailers(film.mediaType, film.id))
+			setRecommendations(await getRecommendations(film.mediaType, film.id))
 		}
-		const arrs: any[] = []
-
-		for (let i = 0; i < 20; i++) {
-			arrs.push({})
-		}
-
-		setRecommendations(arrs)
 	}
 
 	useEffect(() => {
+		setFilm(undefined)
+		window.scrollTo({
+			top: 0,
+		})
 		fetch()
-	}, [id])
+	}, [location])
 
-	if (!film) {
-		return <div>404</div>
+	if (film === null) {
+		// redirect to 404 page
+		return <></>
+	} else if (film === undefined) {
+		return (
+			<div className="text-center flex-1 p-6">
+				<Loader></Loader>
+			</div>
+		)
 	}
 
 	return (
@@ -111,10 +123,15 @@ const Film = (props: IFilmProps) => {
 			</Section>
 			{/* seasons */}
 			<Section title="Seasons">
-				<Slider slidesToShow={2} slidesToScroll={2} swipe={false}>
+				<Slider
+					slidesToShow={film.seasons.length > 2 ? 2 : 1}
+					slidesToScroll={film.seasons.length > 2 ? 2 : 1}
+					swipe={false}
+				>
 					{(_) =>
 						film.seasons.map((season, i) => (
 							<Card
+								className="h-[248px]"
 								onClick={() =>
 									navigate(`/tv/${film.id}/season/${season.seasonNumber}`)
 								}
@@ -128,10 +145,15 @@ const Film = (props: IFilmProps) => {
 			</Section>
 			{/* recommendations */}
 			<Section title="Recommendations">
-				<Slider isMovieCard={true} autoplay={true}>
+				<Slider isMovieCard={true}>
 					{(_) =>
 						recommendations.map((film, i) => (
-							<Card title={film.title} imageSrc={film.coverPath} key={i} />
+							<Card
+								onClick={() => navigate(`/${film.mediaType}/${film.id}`)}
+								title={film.title}
+								imageSrc={tmdbImageSrc(film.posterPath)}
+								key={i}
+							/>
 						))
 					}
 				</Slider>
