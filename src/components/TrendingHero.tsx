@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom"
 import { Film } from "../interfaces"
 import Image from "./Image"
 import { MdPlayCircleOutline } from "react-icons/md"
@@ -9,7 +8,6 @@ export interface ITrendingHeroProps {
 }
 
 const TrendingHero = (props: ITrendingHeroProps) => {
-	const navigate = useNavigate()
 	return (
 		<div
 			className="h-[300px] relative flex items-center cursor-pointer"
