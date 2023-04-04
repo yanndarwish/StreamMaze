@@ -46,10 +46,10 @@ const Home = (props: IHomeProps) => {
 	}
 
 	const fetchTopRatedMovies = async () => {
-		setTopRatedMovies(await getTopRated("movie"))
+		setTopRatedMovies((await getTopRated("movie")).films)
 	}
 	const fetchTopRatedTVs = async () => {
-		setTopRatedTVs(await getTopRated("tv"))
+		setTopRatedTVs((await getTopRated("tv")).films)
 	}
 
 	useEffect(() => {
@@ -96,7 +96,7 @@ const Home = (props: IHomeProps) => {
 				</Slider>
 			</Section>
 			{/* popular */}
-			<Section title="What's Popular">
+			<Section title="What's Popular" onTitleClick={() => navigate(``)}>
 				<Slider isMovieCard={true}>
 					{(_) =>
 						populars.map((film, i) => (
@@ -111,7 +111,10 @@ const Home = (props: IHomeProps) => {
 				</Slider>
 			</Section>
 			{/* top rated tv */}
-			<Section title="Top Rated TV">
+			<Section
+				title="Top Rated TV"
+				onTitleClick={() => navigate(`/list/top-rated-tv`)}
+			>
 				<Slider isMovieCard={true}>
 					{(_) =>
 						topRatedTVs.map((film, i) => (
@@ -126,7 +129,10 @@ const Home = (props: IHomeProps) => {
 				</Slider>
 			</Section>
 			{/* top rated movies */}
-			<Section title="Top Rated Movies">
+			<Section
+				title="Top Rated Movies"
+				onTitleClick={() => navigate(`/list/top-rated-movies`)}
+			>
 				<Slider isMovieCard={true}>
 					{(_) =>
 						topRatedMovies.map((film, i) => (

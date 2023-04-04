@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios"
 import { MediaType } from "../types"
-import { Cast, Film, Genre, Trailer } from "../interfaces"
+import { Cast, Film, Genre, Season, Trailer } from "../interfaces"
 import { formatResult } from "../utils"
 
 const axiosClient = axios.create({
@@ -75,12 +75,13 @@ export const getPopulars = async (
 export const getTopRated = async (
 	mediaType: MediaType,
 	page = 1
-): Promise<Film[]> => {
+): Promise<{ films: Film[]; totalPages: number }> => {
 	try {
 		const { data } = await axiosClient.get<
 			any,
 			AxiosResponse<{
 				results: unknown[]
+				total_pages: number
 			}>
 		>(`/${mediaType}/top_rated`, {
 			params: {
@@ -88,11 +89,17 @@ export const getTopRated = async (
 			},
 		})
 
-		return data.results.map((val) => formatResult(val, mediaType))
+		return {
+			films: data.results.map((val) => formatResult(val, mediaType)),
+			totalPages: data.total_pages,
+		}
 	} catch (error) {
 		console.error(error)
 	}
-	return []
+	return {
+		films: [],
+		totalPages: 0,
+	}
 }
 
 export const search = async (
@@ -100,6 +107,7 @@ export const search = async (
 	page = 1
 ): Promise<{
 	totalResults: number
+	totalPages: number
 	films: Film[]
 }> => {
 	try {
@@ -107,6 +115,7 @@ export const search = async (
 			any,
 			AxiosResponse<{
 				total_results: number
+				total_pages: number
 				results: unknown[]
 			}>
 		>(`/search/multi`, {
@@ -118,6 +127,7 @@ export const search = async (
 
 		return {
 			totalResults: data.total_results,
+			totalPages: data.total_pages,
 			films: data.results.map((val) => formatResult(val)),
 		}
 	} catch (error) {
@@ -125,6 +135,7 @@ export const search = async (
 	}
 	return {
 		totalResults: 0,
+		totalPages: 0,
 		films: [],
 	}
 }
@@ -219,4 +230,69 @@ export const getRecommendations = async (
 		console.error(error)
 	}
 	return []
+}
+
+export const getSeason = async (
+	tvId: number,
+	seasonNumber: number
+): Promise<Season | null> => {
+	try {
+		const { data } = await axiosClient.get<any, any>(
+			`/tv/${tvId}/season/${seasonNumber}`
+		)
+
+		const film = await getDetails("tv", tvId)
+		return {
+			id: data.id,
+			filmName: film?.title || "",
+			name: data.name,
+			airDate: data.air_date,
+			posterPath: data.poster_path,
+			seasonNumber: data.season_number,
+			episodes: data.episodes.map((episode: any) => ({
+				id: episode.id,
+				title: episode.name,
+				overview: episode.overview,
+				airDate: episode.air_date,
+				stillPath: episode.still_path,
+				episodeNumber: episode.episode_number,
+			})),
+		}
+	} catch (error) {
+		console.error(error)
+	}
+	return null
+}
+
+export const discover = async (
+	mediaType: MediaType,
+	page = 1
+): Promise<{
+	films: Film[]
+	totalPages: number
+}> => {
+	try {
+		const { data } = await axiosClient.get<
+			any,
+			AxiosResponse<{
+				total_pages: number
+				results: unknown[]
+			}>
+		>(`/discover/${mediaType}`, {
+			params: {
+				page,
+			},
+		})
+
+		return {
+			films: data.results.map((val) => formatResult(val, mediaType)),
+			totalPages: data.total_pages,
+		}
+	} catch (error) {
+		console.error(error)
+	}
+	return {
+		films: [],
+		totalPages: 0,
+	}
 }

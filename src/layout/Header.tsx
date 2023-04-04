@@ -112,7 +112,7 @@ const Header = () => {
 					/>
 					<IoIosSearch size={18} />
 					{/* results */}
-					{isSearchFocus && (
+					{isSearchFocus && keyword &&(
 						<SearchResult
 							keyword={keyword}
 							goToSearchPage={goToSearchPage}
