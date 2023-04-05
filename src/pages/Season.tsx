@@ -63,7 +63,7 @@ const Season = (props: IEpisodesProps) => {
 							src={tmdbImageSrc(episode.stillPath)}
 							className="w-[300px] max-w-[300px] max-h-[150px]"
 						></Image>
-						<div className="overflow-hidden flex flex-col gap-3 mobile:py-3">
+						<div className="overflow-hidden flex flex-col gap-3 mobile:py-3 w-full">
 							<p className="text-lg truncate">
 								{episode.episodeNumber}. {episode.title}
 							</p>

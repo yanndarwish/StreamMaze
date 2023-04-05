@@ -74,7 +74,7 @@ const Home = (props: IHomeProps) => {
 		<>
 			<TrailerModal src={trailerSrc} onHide={() => setTrailerSrc("")} />
 			{/* trending */}
-			<Section className="pt-0 pb-0">
+			<Section className="pt-0 pb-0" hidden={trendings.length === 0}>
 				<Slider
 					className="slick-hero"
 					autoplay={true}
@@ -94,7 +94,7 @@ const Home = (props: IHomeProps) => {
 				</Slider>
 			</Section>
 			{/* in theater */}
-			<Section title="In theaters">
+			<Section title="In theaters" hidden={inTheaters.length === 0}>
 				<Slider isMovieCard={true}>
 					{(_) =>
 						inTheaters.map((film, i) => (
@@ -109,7 +109,11 @@ const Home = (props: IHomeProps) => {
 				</Slider>
 			</Section>
 			{/* popular */}
-			<Section title="What's Popular" onTitleClick={() => navigate(``)}>
+			<Section
+				hidden={populars.length === 0}
+				title="What's Popular"
+				onTitleClick={() => navigate(``)}
+			>
 				<Slider isMovieCard={true}>
 					{(_) =>
 						populars.map((film, i) => (
@@ -125,6 +129,7 @@ const Home = (props: IHomeProps) => {
 			</Section>
 			{/* top rated tv */}
 			<Section
+				hidden={topRatedTVs.length === 0}
 				title="Top Rated TV"
 				onTitleClick={() => navigate(`/list/top-rated-tv`)}
 			>
@@ -143,6 +148,7 @@ const Home = (props: IHomeProps) => {
 			</Section>
 			{/* top rated movies */}
 			<Section
+				hidden={topRatedMovies.length === 0}
 				title="Top Rated Movies"
 				onTitleClick={() => navigate(`/list/top-rated-movies`)}
 			>
