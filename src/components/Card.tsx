@@ -12,7 +12,10 @@ const Card = (props: ICardProps) => {
 	return (
 		<div
 			onClick={() => props.onClick && props.onClick()}
-			className={mergeClassName("mx-3 my-1.5 cursor-pointer", props.className)}
+			className={mergeClassName(
+				"group mx-3 my-1.5 cursor-pointer",
+				props.className
+			)}
 		>
 			<Image
 				src={props.imageSrc}

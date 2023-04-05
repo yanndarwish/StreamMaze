@@ -13,6 +13,11 @@ export default {
 					max: "768px",
 				},
 			},
+			transitionProperty: {
+				margin: "margin",
+				opacity: "opacity",
+				transform: "transform"
+			}
 		},
 	},
 	plugins: [require("@tailwindcss/line-clamp"), require("tailwind-scrollbar")],

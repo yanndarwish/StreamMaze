@@ -9,19 +9,30 @@ import {
 	getInTheaters,
 	getPopulars,
 	getTopRated,
+	getTrailers,
 	getTrendings,
 } from "../api/tmdb-api"
 import { isFilm, mergeFilms, tmdbImageSrc } from "../utils"
+import TrailerModal from "../components/TrailerModal"
 
 export interface IHomeProps {}
 
 const Home = (props: IHomeProps) => {
 	const navigate = useNavigate()
+
 	const [trendings, setTrendings] = useState<Film[]>([])
 	const [inTheaters, setInTheaters] = useState<Film[]>([])
 	const [populars, setPopulars] = useState<Film[]>([])
 	const [topRatedMovies, setTopRatedMovies] = useState<Film[]>([])
 	const [topRatedTVs, setTopRatedTVs] = useState<Film[]>([])
+	const [trailerSrc, setTrailerSrc] = useState("")
+
+	const playTrailer = async (film: Film) => {
+		const trailers = await getTrailers(film.mediaType, film.id)
+		setTrailerSrc(
+			`https://www.youtube.com/embed/${trailers[0].key}?&autoplay=1`
+		)
+	}
 
 	const goToDetailPage = (film: Film) => {
 		navigate(`/${film.mediaType}/${film.id}`)
@@ -61,6 +72,7 @@ const Home = (props: IHomeProps) => {
 	}, [])
 	return (
 		<>
+			<TrailerModal src={trailerSrc} onHide={() => setTrailerSrc("")} />
 			{/* trending */}
 			<Section className="pt-0 pb-0">
 				<Slider
@@ -72,6 +84,7 @@ const Home = (props: IHomeProps) => {
 					{(onSwipe) =>
 						trendings.map((film, i) => (
 							<TrendingHero
+								onPlayTrailer={() => playTrailer(film)}
 								onClick={() => !onSwipe && goToDetailPage(film)}
 								film={film}
 								key={i}
